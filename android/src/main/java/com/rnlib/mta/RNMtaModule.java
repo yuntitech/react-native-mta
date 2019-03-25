@@ -8,7 +8,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tencent.stat.MtaSDkException;
+import com.tencent.stat.StatAccount;
 import com.tencent.stat.StatConfig;
+import com.tencent.stat.StatMultiAccount;
 import com.tencent.stat.StatService;
 
 import org.json.JSONObject;
@@ -34,7 +36,7 @@ public class RNMtaModule extends ReactContextBaseJavaModule {
     public void startWithAppkey(String appKey, String channel, Boolean isDebug, Promise promise) {
         if (!appKey.equals("")) {
             StatConfig.setAppKey(this.reactContext, appKey);
-            StatConfig.setInstallChannel(channel);
+            StatConfig.setInstallChannel(reactContext, channel);
             StatConfig.setDebugEnable(isDebug);
             try {
                 this.isInitSuccess = StatService.startStatService(
@@ -141,6 +143,42 @@ public class RNMtaModule extends ReactContextBaseJavaModule {
         StatService.reportCustomProperty(this.reactContext, customerProperty);
 
         promise.resolve(true);
+    }
+
+    @ReactMethod
+    public void reportAccount(int type, String id, Promise promise) {
+        String accountId = id;
+        StatMultiAccount account = new StatMultiAccount(getAccountType(type), accountId);
+        StatService.reportMultiAccount(this.reactContext, account);
+        promise.resolve(true);
+    }
+
+    @ReactMethod
+    public void removeAccount(int type, Promise promise) {
+        StatService.removeMultiAccount(this.reactContext, getAccountType(type));
+        promise.resolve(true);
+    }
+
+    private StatMultiAccount.AccountType getAccountType(int type) {
+        StatMultiAccount.AccountType accountType = StatMultiAccount.AccountType.UNDEFINED;
+        switch (type) {
+            case 1:
+                accountType = StatMultiAccount.AccountType.PHONE_NO;
+                break;
+            case 2:
+                accountType = StatMultiAccount.AccountType.OPEN_WEIXIN;
+                break;
+            case 3:
+                accountType = StatMultiAccount.AccountType.OPEN_QQ;
+                break;
+            case 4:
+                accountType = StatMultiAccount.AccountType.OPEN_WEIBO;
+                break;
+            default:
+                accountType = StatMultiAccount.AccountType.PHONE_NO;
+                break;
+        }
+        return accountType;
     }
 
     private static Properties rnMapToProperties(ReadableMap map) {
