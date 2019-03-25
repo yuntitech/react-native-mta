@@ -1,9 +1,11 @@
 #import "MTA.h"
 #import "MTAConfig.h"
 #import "RNMta.h"
+#import "MTA+Account.h"
 
 @implementation RNMta {
     BOOL _isInitSuccess;
+    NSString *_openId; // 用来记录openId
 }
 
 RCT_EXPORT_MODULE()
@@ -157,11 +159,55 @@ RCT_REMAP_METHOD(setUserProperty,
     resolve([NSNumber numberWithBool:YES]);
 }
 
+#pragma 统计触发账号数
+
+RCT_REMAP_METHOD(reportAccount,
+                 reportAccountWithType:(int)type
+                 openId:(NSString *)openId
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    _openId = openId; // 记录openId，在remove方法中使用
+    MTAAccountInfo *info = [MTAAccountInfo new];
+    info.type = [self convertAccountType:type];
+    info.account = openId;
+    info.accountStatus = MTAAccountStatusNormal;
+    [MTA reportAccountExt:@[info]];
+    resolve([NSNumber numberWithBool:YES]);
+}
+
+RCT_REMAP_METHOD(removeAccount,
+                 removeAccountWithType:(int)type
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    MTAAccountInfo *info = [MTAAccountInfo new];
+    info.type = [self convertAccountType:type];
+    info.account = _openId;
+    info.accountStatus = MTAAccountStatusLogout;
+    [MTA reportAccountExt:@[info]];
+    resolve([NSNumber numberWithBool:YES]);
+}
 
 #pragma other
 - (NSNumber *)getResolveResFromBool:(BOOL)boolValue
 {
     return [NSNumber numberWithBool:boolValue];
 }
+
+- (int)convertAccountType:(int)type {
+    if (type == 1) {
+        return MTAAccountPhone;
+    } else if (type == 2) {
+        return MTAAccountWeixin;
+    } else if (type == 3) {
+        return MTAAccountQQOpenid;
+    } else if (type == 4) {
+        return MTAAccountWeibo
+    } else {
+        return MTAAccountUndefined;
+    }
+}
+
 
 @end

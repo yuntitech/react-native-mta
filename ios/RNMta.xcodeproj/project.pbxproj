@@ -29,6 +29,7 @@
 		36FD48F020905B7B004FBB7C /* MTA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTA.h; path = SDK/MTA.h; sourceTree = "<group>"; };
 		36FD48F120905B7B004FBB7C /* libmtasdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmtasdk.a; path = SDK/libmtasdk.a; sourceTree = "<group>"; };
 		36FD48F220905B7B004FBB7C /* MTAConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTAConfig.h; path = SDK/MTAConfig.h; sourceTree = "<group>"; };
+		5EE1EB5C2248EA7B004FB45F /* MTA+Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MTA+Account.h"; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNMta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNMta.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNMta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNMta.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,6 +57,7 @@
 		36A613A3204939F9006ACDAD /* SDK */ = {
 			isa = PBXGroup;
 			children = (
+				5EE1EB5C2248EA7B004FB45F /* MTA+Account.h */,
 				36FD48F020905B7B004FBB7C /* MTA.h */,
 				36FD48F220905B7B004FBB7C /* MTAConfig.h */,
 				36FD48F120905B7B004FBB7C /* libmtasdk.a */,
