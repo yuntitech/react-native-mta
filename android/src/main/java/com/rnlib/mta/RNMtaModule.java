@@ -8,14 +8,16 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tencent.stat.MtaSDkException;
-import com.tencent.stat.StatAccount;
 import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatMultiAccount;
 import com.tencent.stat.StatService;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+
 
 public class RNMtaModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
@@ -146,16 +148,14 @@ public class RNMtaModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void reportAccount(int type, String id, Promise promise) {
+    public void reportAccount(int type, String id, String booklnUserId, String status, Promise promise) {
         String accountId = id;
-        StatMultiAccount account = new StatMultiAccount(getAccountType(type), accountId);
-        StatService.reportMultiAccount(this.reactContext, account);
-        promise.resolve(true);
-    }
-
-    @ReactMethod
-    public void removeAccount(int type, Promise promise) {
-        StatService.removeMultiAccount(this.reactContext, getAccountType(type));
+        StatMultiAccount thirdAccount = new StatMultiAccount(getAccountType(type), accountId);
+        thirdAccount.setCurrentStatusType(status.equals("LOGIN") ? StatMultiAccount.AccountStatus.NORMAL : status.equals("LOGOUT") ? StatMultiAccount.AccountStatus.LOGOUT : StatMultiAccount.AccountStatus.UNDEFINED);
+        StatMultiAccount yuntiAccount = new StatMultiAccount(StatMultiAccount.AccountType.CUSTOM, booklnUserId);
+        yuntiAccount.setCurrentStatusType(status.equals("LOGIN") ? StatMultiAccount.AccountStatus.NORMAL : status.equals("LOGOUT") ? StatMultiAccount.AccountStatus.LOGOUT : StatMultiAccount.AccountStatus.UNDEFINED);
+        List accountList = Arrays.asList(thirdAccount, yuntiAccount);
+        StatService.reportMultiAccount(this.reactContext, accountList);
         promise.resolve(true);
     }
 

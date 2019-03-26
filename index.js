@@ -156,29 +156,25 @@ const setUserProperty = async params => {
 
 /**
  * reportAccount 上报单个账号，通常用于登陆/刷票登陆/第三方登陆等时机调用
- * @param  {number}  type      账号类型
- * @param  {String}  id        账号id
+ * @param  {number}  type           账号类型
+ * @param  {String}  id             账号id
+ * @param  {String}  booklnUserId   书链userid
+ * @param  {AccountStatus}  status         登录登出状态
  * @return {Promise}
  */
 const reportAccount = async ({
   type,
-  id
+  id,
+  booklnUserId,
+  status
 }: {
   type: AccountType,
-  id: String
+  id: String,
+  booklnUserId: String,
+  status: AccountStatus
 }) => {
   await checkInitialResult();
-  return RNMta.reportAccount(type, id);
-};
-
-/**
- * removeAccount 根据账号类型删除某个账号，通常用于注销时调用
- * @param  {number}  type      账号类型
- * @return {Promise}
- */
-const removeAccount = async (type: AccountType) => {
-  await checkInitialResult();
-  return RNMta.removeAccount(type);
+  return RNMta.reportAccount(type, id, booklnUserId, status);
 };
 
 let checkInitialResult = async () => {
@@ -233,6 +229,11 @@ const AccountType = {
   OPEN_WEIBO: 4
 };
 
+const AccountStatus = {
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT'
+};
+
 export default {
   startWithAppkey,
   setUserProperty,
@@ -245,6 +246,6 @@ export default {
   trackActiveBegin,
   trackActiveEnd,
   reportAccount,
-  removeAccount,
-  AccountType
+  AccountType,
+  AccountStatus
 };
