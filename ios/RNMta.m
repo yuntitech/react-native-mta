@@ -203,7 +203,7 @@ RCT_REMAP_METHOD(removeAccount,
     } else if (type == 3) {
         return MTAAccountQQOpenid;
     } else if (type == 4) {
-        return MTAAccountWeibo
+        return MTAAccountWeibo;
     } else {
         return MTAAccountUndefined;
     }
