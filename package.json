@@ -1,5 +1,5 @@
 {
-  "name": "react-native-mta",
+  "name": "@yyyyu/react-native-mta",
   "author": "yyyyu <g592842897@gmail.com>",
   "version": "2.1.0",
   "keywords": [
@@ -20,7 +20,7 @@
   },
   "rnpm": {
     "commands": {
-      "postlink": "node node_modules/react-native-mta/scripts/postlink"
+      "postlink": "node node_modules/@yyyyu/react-native-mta/scripts/postlink"
     }
   },
   "peerDependencies": {
