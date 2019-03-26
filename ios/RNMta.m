@@ -5,7 +5,6 @@
 
 @implementation RNMta {
     BOOL _isInitSuccess;
-    NSString *_openId; // 用来记录openId
 }
 
 RCT_EXPORT_MODULE()
@@ -162,30 +161,24 @@ RCT_REMAP_METHOD(setUserProperty,
 #pragma 统计触发账号数
 
 RCT_REMAP_METHOD(reportAccount,
-                 reportAccountWithType:(int)type
-                 openId:(NSString *)openId
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject)
+  reportAccountWithAccountType:(int)accountType
+                        openId:(NSString *)openId
+                  bookInUserId:(NSString *)bookInUserId
+                 accountStatus:(NSString *)accountStatus
+                      resolver:(RCTPromiseResolveBlock)resolve
+                      rejecter:(RCTPromiseRejectBlock)reject)
 {
-    _openId = openId; // 记录openId，在remove方法中使用
-    MTAAccountInfo *info = [MTAAccountInfo new];
-    info.type = [self convertAccountType:type];
-    info.account = openId;
-    info.accountStatus = MTAAccountStatusNormal;
-    [MTA reportAccountExt:@[info]];
-    resolve([NSNumber numberWithBool:YES]);
-}
-
-RCT_REMAP_METHOD(removeAccount,
-                 removeAccountWithType:(int)type
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject)
-{
-    MTAAccountInfo *info = [MTAAccountInfo new];
-    info.type = [self convertAccountType:type];
-    info.account = _openId;
-    info.accountStatus = MTAAccountStatusLogout;
-    [MTA reportAccountExt:@[info]];
+    MTAAccountInfo *info1 = [MTAAccountInfo new];
+    info1.type = [self convertAccountType:accountType];
+    info1.account = openId;
+    info1.accountStatus = [self convertAccountStatus:accountStatus];
+    
+    MTAAccountInfo *info2 = [MTAAccountInfo new];
+    info2.type = MTAAccountCustom;
+    info2.account = bookInUserId;
+    info2.accountStatus = [self convertAccountStatus:accountStatus];
+    
+    [MTA reportAccountExt:@[info1, info2]];
     resolve([NSNumber numberWithBool:YES]);
 }
 
@@ -195,7 +188,7 @@ RCT_REMAP_METHOD(removeAccount,
     return [NSNumber numberWithBool:boolValue];
 }
 
-- (int)convertAccountType:(int)type {
+- (MTAAccountTypeExt)convertAccountType:(int)type {
     if (type == 1) {
         return MTAAccountPhone;
     } else if (type == 2) {
@@ -209,5 +202,14 @@ RCT_REMAP_METHOD(removeAccount,
     }
 }
 
+- (MTAAccountStatus)convertAccountStatus:(NSString *)accountStatus {
+    if ([accountStatus isEqual:@"LOGIN"]) {
+        return MTAAccountStatusNormal;
+    } else if ([accountStatus isEqual:@"LOGOUT"]) {
+        return MTAAccountStatusLogout;
+    } else {
+        return MTAAccountStatusUndefined;
+    }
+}
 
 @end
