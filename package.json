@@ -9,10 +9,10 @@
   ],
   "description": "react native for tencent mta.",
   "license": "MIT",
-  "homepage": "https://github.com/yyyyu/react-native-mta",
+  "homepage": "https://github.com/yuntitech/react-native-mta",
   "repository": {
     "type": "git",
-    "url": "git@github.com:yyyyu/react-native-mta.git"
+    "url": "git@github.com:yuntitech/react-native-mta.git"
   },
   "main": "index.js",
   "scripts": {
